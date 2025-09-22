@@ -5,13 +5,11 @@ const COHORT = "/2508";
 const RESOURCE = "/events";
 const API = BASE + COHORT + RESOURCE;
 
-console.log(API);
-
 //State
 let events = [];
 let selectedEvent;
 
-async function getEvents(events) {
+async function getEvents() {
   try {
     const response = await fetch(API);
     const result = await response.json();
@@ -22,9 +20,6 @@ async function getEvents(events) {
     console.error(error);
   }
 }
-
-//test
-getEvents(events);
 
 async function getEvent(id) {
   try {
@@ -38,9 +33,6 @@ async function getEvent(id) {
   }
 }
 
-//test
-getEvent(4291);
-
 function PartyListItem(event) {
   const $li = document.createElement("li");
   $li.innerHTML = `
@@ -50,9 +42,30 @@ function PartyListItem(event) {
   return $li;
 }
 
-function PartyList() {}
+function PartyList() {
+  const $ul = document.createElement("ul");
+  $ul.classList.add("events");
+  const $events = events.map(PartyListItem);
+  $ul.replaceChildren(...$events);
+  return $ul;
+}
 
-function PartyDetails() {}
+function PartyDetails() {
+  if (!selectedEvent) {
+    const $p = document.createElement("p");
+    $p.textContent = "Please select an event to learn more.";
+    return $p;
+  }
+
+  const $event = document.createElement("section");
+  $event.classList.add("event");
+  $event.innerHTML = `<h3>${selectedEvent.name} #${selectedEvent.id}</h3>
+    <ul></ul>
+    <li>Date: ${selectedEvent.date}</li>
+    <li>Location: ${selectedEvent.location}</li>
+    <li>Description: ${selectedEvent.description}</p>`;
+  return $event;
+}
 
 function render() {
   const $app = document.querySelector("#app");
